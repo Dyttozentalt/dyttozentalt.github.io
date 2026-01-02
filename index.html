@@ -5,307 +5,256 @@
   <title>This tab is under construction</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="KS4 hub: curriculum overview, subject guides, assessment calendar, resources, and revision support." />
+
   <style>
     :root{
-      --bg:#0f172a;           /* deep slate */
-      --panel:#111827;        /* near-black panel */
-      --brand:#4f46e5;        /* indigo */
-      --brand-2:#06b6d4;      /* teal accent */
-      --text:#e5e7eb;         /* light text */
-      --muted:#a1a1aa;        /* muted text */
-      --card:#1f2937;         /* card background */
-      --success:#22c55e;
-      --warning:#f59e0b;
-      --danger:#ef4444;
+      --bg:#0f172a;
+      --panel:#111827;
+      --brand:#4f46e5;
+      --brand-2:#06b6d4;
+      --text:#e5e7eb;
+      --muted:#a1a1aa;
+      --card:#1f2937;
     }
+
     *{box-sizing:border-box}
-    html,body{margin:0;background:linear-gradient(135deg,var(--bg),#0b132b);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif}
-    a{color:var(--brand);text-decoration:none}
-    a:focus,button:focus,input:focus,select:focus{outline:2px solid var(--brand-2);outline-offset:2px}
-    header{
-      position:sticky;top:0;z-index:50;background:rgba(17,24,39,.8);
-      backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid #243042
+
+    html,body{
+      margin:0;
+      background:linear-gradient(135deg,var(--bg),#0b132b);
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+      line-height:1.6;
     }
-    .nav{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:20px;padding:12px 20px}
-    .logo{display:flex;align-items:center;gap:10px}
-    .logo-mark{width:28px;height:28px;border-radius:6px;background:
-      conic-gradient(from 210deg,var(--brand),var(--brand-2) 40%,#7c3aed 70%,var(--brand));box-shadow:0 0 0 2px #0b132b}
-    .brand{font-weight:700;letter-spacing:.2px}
-    .navlinks{display:flex;flex-wrap:wrap;gap:14px;margin-left:auto}
-    .navlinks a{padding:8px 10px;border-radius:8px}
-    .navlinks a:hover{background-color:#0b1c2a}
-    .cta{display:flex;gap:8px}
-    .btn{padding:8px 12px;border-radius:10px;border:1px solid #243042;background:#0a1624;color:var(--text)}
-    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));border:0;color:white}
-    .btn:hover{filter:brightness(1.08)}
-    .hero{max-width:1100px;margin:24px auto;padding:28px 20px;display:grid;grid-template-columns:1.2fr .8fr;gap:24px}
-    .hero-card{background:linear-gradient(135deg,#0b1628,#0a1521);border:1px solid #253248;border-radius:16px;padding:22px}
-    .hero h1{margin:0 0 8px;font-size:2rem}
-    .hero p{color:var(--muted);margin:0 0 14px}
-    .pillrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-    .pill{font-size:.9rem;padding:6px 10px;border-radius:999px;background:#102033;border:1px solid #223143;color:#cbd5e1}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
-    .stat{background:var(--card);border:1px solid #253248;border-radius:12px;padding:12px;text-align:center}
-    .grid{max-width:1100px;margin:0 auto;padding:0 20px 40px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-    .section{grid-column:1/-1;background:var(--panel);border:1px solid #253248;border-radius:16px;padding:18px}
-    .section h2{margin:0 0 6px;font-size:1.4rem}
+
+    a{color:var(--brand);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:rgba(17,24,39,.85);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid #243042;
+    }
+
+    .nav{
+      max-width:1100px;
+      margin:0 auto;
+      padding:14px 20px;
+      display:flex;
+      align-items:center;
+      gap:20px;
+    }
+
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .logo-mark{
+      width:30px;
+      height:30px;
+      border-radius:8px;
+      background:conic-gradient(from 210deg,var(--brand),var(--brand-2) 40%,#7c3aed 70%,var(--brand));
+      box-shadow:0 0 0 2px #0b132b;
+    }
+
+    .brand{font-weight:700}
+
+    .navlinks{
+      margin-left:auto;
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .navlinks a{
+      padding:6px 10px;
+      border-radius:8px;
+    }
+
+    .navlinks a:hover{
+      background:#0b1c2a;
+      text-decoration:none;
+    }
+
+    .btn{
+      padding:8px 14px;
+      border-radius:10px;
+      border:1px solid #243042;
+      background:#0a1624;
+      color:var(--text);
+      cursor:pointer;
+    }
+
+    .btn.primary{
+      background:linear-gradient(135deg,var(--brand),var(--brand-2));
+      border:0;
+      color:white;
+    }
+
+    .hero{
+      max-width:1100px;
+      margin:32px auto;
+      padding:0 20px;
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:24px;
+    }
+
+    .hero-card{
+      background:linear-gradient(135deg,#0b1628,#0a1521);
+      border:1px solid #253248;
+      border-radius:18px;
+      padding:26px;
+    }
+
+    .hero h1{
+      margin:0 0 10px;
+      font-size:2.1rem;
+      line-height:1.25;
+    }
+
+    .pillrow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .pill{
+      padding:6px 12px;
+      border-radius:999px;
+      background:#102033;
+      border:1px solid #223143;
+      font-size:.85rem;
+    }
+
+    .stats{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+
+    .stat{
+      background:var(--card);
+      border:1px solid #253248;
+      border-radius:12px;
+      padding:14px;
+      text-align:center;
+    }
+
+    .section{
+      max-width:1100px;
+      margin:0 auto 28px;
+      padding:22px 20px;
+      background:var(--panel);
+      border:1px solid #253248;
+      border-radius:18px;
+    }
+
+    .section h2{margin-top:0}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:20px;
+      margin-top:14px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid #253248;
+      border-radius:14px;
+      padding:18px;
+    }
+
     .muted{color:var(--muted)}
-    .card{background:var(--card);border:1px solid #253248;border-radius:14px;padding:16px}
-    .card h3{margin:0 0 6px;font-size:1.05rem}
-    .badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:.8rem;border:1px solid #2a3a4e;color:#cbd5e1}
-    .badge.success{border-color:#174a2a;color:#86efac}
-    .badge.warning{border-color:#4a3b17;color:#fde68a}
-    .badge.danger{border-color:#4a1e1e;color:#fecaca}
-    .list{display:grid;gap:10px}
-    .calendar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .calendar .item{background:#0b1628;border:1px solid #233245;border-radius:12px;padding:12px}
-    .calendar .item b{display:block;margin-bottom:6px}
-    .resources{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .resource{display:flex;gap:10px;align-items:flex-start;background:#0b1628;border:1px solid #233245;border-radius:12px;padding:12px}
-    .resource .icon{width:34px;height:34px;border-radius:8px;background:#13263a}
-    .footer{border-top:1px solid #243042;margin-top:24px;background:#0a1521}
-    .footer-inner{max-width:1100px;margin:0 auto;padding:18px 20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+
+    .footer{
+      border-top:1px solid #243042;
+      background:#0a1521;
+    }
+
+    .footer-inner{
+      max-width:1100px;
+      margin:0 auto;
+      padding:20px;
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
+      .navlinks{display:none}
+    }
   </style>
 </head>
-<body>
-  <a class="sr-only" href="#main">Skip to content</a>
 
-  <header aria-label="Primary">
-    <nav class="nav" role="navigation" aria-label="Main">
+<body>
+  <header>
+    <nav class="nav">
       <div class="logo">
-        <div class="logo-mark" aria-hidden="true"></div>
+        <div class="logo-mark"></div>
         <span class="brand">Under construction</span>
-        <span class="muted" aria-hidden="true">• This tab is under construction, if you wish to leave some feedback, you can use the widget, in the bottom right corner</span>
-      </div>
-      <div class="navlinks">
-        <a href="#overview">Overview</a>
-        <a href="#subjects">Subjects</a>
-        <a href="#assessments">Assessments</a>
-        <a href="#resources">Resources</a>
-        <a href="#revision">Revision</a>
-        <a href="#contact">Contact</a>
-      </div>
-      <div class="cta" role="group" aria-label="Quick actions">
-        <button class="btn">Parent Portal</button>
-        <button class="btn primary">Student Login</button>
+        <span class="muted">• Leave feedback using the widget in the bottom-right</span>
       </div>
     </nav>
   </header>
 
-  <main id="main" tabindex="-1">
-    <section class="hero" aria-labelledby="title">
+  <main>
+    <section class="hero">
       <div class="hero-card">
-        <h1 id="title">This may not stay as a KS4 Hub and may change to be a completely different website depending on what feedback we get. You can leave feedback by using the widget in the bottom right corner!</h1>
-        <p>Your central space for KS4 curriculum, assessments, and the right resources at the right time.</p>
-        <div class="pillrow" aria-label="Quick info">
-          <span class="pill">Years 10–11</span>
-          <span class="pill">GCSE pathways</span>
-          <span class="pill">Core + options</span>
-          <span class="pill">Targeted revision</span>
+        <h1>This site is still taking shape 👷</h1>
+        <p class="muted">
+          This may remain a KS4 Hub or evolve into something completely different depending on feedback.
+          You can share thoughts anytime using the chat widget.
+        </p>
+
+        <div class="pillrow">
+          <span class="pill">Experimental</span>
+          <span class="pill">Feedback-driven</span>
+          <span class="pill">Work in progress</span>
         </div>
-        <div class="stats" aria-label="Snapshot">
-          <div class="stat"><div class="muted">Subjects</div><div><b>12</b></div></div>
-          <div class="stat"><div class="muted">Upcoming mocks</div><div><b>3</b></div></div>
-          <div class="stat"><div class="muted">Key dates</div><div><b>8</b></div></div>
+
+        <div class="stats">
+          <div class="stat"><div class="muted">Status</div><b>Alpha</b></div>
         </div>
       </div>
+
       <div class="hero-card">
-        <h2 style="margin-top:0">This week’s focus</h2>
-        <ul class="list" aria-label="Focus list">
-          <li><span class="badge success">Ready</span> Finalise options and confirm timetables</li>
-          <li><span class="badge warning">Soon</span> Year 11 mock week: English & Maths</li>
-          <li><span class="badge danger">Action</span> Upload coursework checkpoints to your subject portals</li>
+        <h2>What you can do right now</h2>
+        <ul>
+          <li>Leave feedback or suggestions</li>
+          <li>Report bugs or broken layouts</li>
+          <li>Suggest what this site *should* become</li>
         </ul>
-      </div>
-    </section>
-
-    <section id="overview" class="section" aria-labelledby="overview-title">
-      <h2 id="overview-title">Curriculum overview</h2>
-      <p class="muted">KS4 combines core subjects with option pathways. Below is the high-level structure and recommended study load per week.</p>
-      <div class="grid">
-        <div class="card">
-          <h3>Core subjects</h3>
-          <ul class="list">
-            <li><b>English:</b> Language and Literature (combined pathway)</li>
-            <li><b>Mathematics:</b> Foundation or Higher tier</li>
-            <li><b>Science:</b> Combined Trilogy or Separate Sciences</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Options</h3>
-          <ul class="list">
-            <li><b>Humanities:</b> History or Geography</li>
-            <li><b>Languages:</b> French, Spanish, or German</li>
-            <li><b>Creative/Tech:</b> Computer Science, Art, Design & Tech, Music, Drama</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Study load</h3>
-          <ul class="list">
-            <li><b>Core:</b> 6–8 hours weekly across English, Maths, Science</li>
-            <li><b>Options:</b> 2–3 hours per chosen subject</li>
-            <li><b>Revision:</b> Little and often; schedule daily 30–45 minute blocks</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section id="subjects" class="section" aria-labelledby="subjects-title">
-      <h2 id="subjects-title">Subject guides</h2>
-      <p class="muted">Key specs, exam boards, and topic maps. Replace placeholders with your school’s details.</p>
-      <div class="grid" role="list">
-        <article class="card" role="listitem" aria-labelledby="eng-title">
-          <h3 id="eng-title">English (AQA)</h3>
-          <p class="muted">Language Paper 1 & 2; Literature: Shakespeare, 19th‑century novel, modern drama/poetry.</p>
-          <ul class="list">
-            <li><b>Skills:</b> Analysis, comparisons, critical essays</li>
-            <li><b>Coursework:</b> Spoken Language Endorsement</li>
-            <li><b>Resources:</b> Past papers • Mark schemes • Model answers</li>
-          </ul>
-        </article>
-
-        <article class="card" role="listitem" aria-labelledby="maths-title">
-          <h3 id="maths-title">Mathematics (Edexcel)</h3>
-          <p class="muted">Number, Algebra, Ratio & Proportion, Geometry, Statistics, Probability.</p>
-          <ul class="list">
-            <li><b>Tiers:</b> Foundation & Higher</li>
-            <li><b>Practice:</b> Daily mixed sets; weekly exam‑style papers</li>
-            <li><b>Resources:</b> Exam walkthroughs • Formula sheets</li>
-          </ul>
-        </article>
-
-        <article class="card" role="listitem" aria-labelledby="sci-title">
-          <h3 id="sci-title">Science (AQA)</h3>
-          <p class="muted">Biology, Chemistry, Physics — Combined or Separate Sciences pathways.</p>
-          <ul class="list">
-            <li><b>Practicals:</b> Required practicals checklist</li>
-            <li><b>Assessment:</b> Two papers per discipline (Separate) / Trilogy structure</li>
-            <li><b>Resources:</b> Practical videos • Topic grids</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section id="assessments" class="section" aria-labelledby="assessments-title">
-      <h2 id="assessments-title">Assessment calendar</h2>
-      <p class="muted">Key dates and checkpoints. Swap in real dates to keep everyone aligned.</p>
-      <div class="calendar" role="list">
-        <div class="item" role="listitem"><b>Jan — Mock week</b><span class="muted">English Lang (P1), Maths (P1), Science (Bio/Chem)</span></div>
-        <div class="item" role="listitem"><b>Mar — Coursework window</b><span class="muted">Art portfolio check • DT prototype review</span></div>
-        <div class="item" role="listitem"><b>May — Final exams begin</b><span class="muted">Full timetable released by exam boards</span></div>
-        <div class="item" role="listitem"><b>Ongoing — Retrieval</b><span class="muted">Bi‑weekly low‑stakes quizzes across all subjects</span></div>
-        <div class="item" role="listitem"><b>Parent evenings</b><span class="muted">Year 10 in Spring • Year 11 in Autumn</span></div>
-        <div class="item" role="listitem"><b>Results day</b><span class="muted">August — collection and post‑16 guidance</span></div>
-      </div>
-    </section>
-
-    <section id="resources" class="section" aria-labelledby="resources-title">
-      <h2 id="resources-title">Resources hub</h2>
-      <p class="muted">Central links to specs, revision platforms, and school portals.</p>
-      <div class="resources">
-        <div class="resource">
-          <div class="icon" aria-hidden="true"></div>
-          <div>
-            <b>Exam specifications</b>
-            <p class="muted">Direct links to exam boards and syllabus documents for each subject.</p>
-            <a href="#" aria-label="Open exam specifications">Open</a>
-          </div>
-        </div>
-        <div class="resource">
-          <div class="icon" aria-hidden="true"></div>
-          <div>
-            <b>Past papers & mark schemes</b>
-            <p class="muted">Organised by year and tier with solution walkthroughs.</p>
-            <a href="#" aria-label="Open past papers">Open</a>
-          </div>
-        </div>
-        <div class="resource">
-          <div class="icon" aria-hidden="true"></div>
-          <div>
-            <b>Subject portals</b>
-            <p class="muted">Teacher pages with lesson plans, homework, and announcements.</p>
-            <a href="#" aria-label="Open subject portals">Open</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="revision" class="section" aria-labelledby="revision-title">
-      <h2 id="revision-title">Revision planner</h2>
-      <p class="muted">Little-and-often revision with retrieval practice and spaced repetition.</p>
-      <div class="grid">
-        <div class="card">
-          <h3>Weekly rhythm</h3>
-          <ul class="list">
-            <li><b>Daily:</b> 30–45 mins focused block</li>
-            <li><b>Midweek:</b> Mixed past paper set</li>
-            <li><b>Weekend:</b> Topic review + self‑quiz</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Techniques</h3>
-          <ul class="list">
-            <li><b>Active recall:</b> Flashcards, closed‑book summaries</li>
-            <li><b>Spaced repetition:</b> Revisit topics on increasing intervals</li>
-            <li><b>Exam conditions:</b> Timed practice, mark to official schemes</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Checkpoints</h3>
-          <ul class="list">
-            <li><b>Self‑marking:</b> Track accuracy by topic</li>
-            <li><b>Targets:</b> Identify weak spots; plan 2× focus blocks</li>
-            <li><b>Feedback:</b> Share with teacher, adjust plan</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="section" aria-labelledby="contact-title">
-      <h2 id="contact-title">Contact and support</h2>
-      <p class="muted">Pastoral, SEN, and academic support contacts for KS4.</p>
-      <div class="grid">
-        <div class="card">
-          <h3>Year leads</h3>
-          <ul class="list">
-            <li><b>Year 10 Lead:</b> name@school.tld</li>
-            <li><b>Year 11 Lead:</b> name@school.tld</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Pastoral support</h3>
-          <ul class="list">
-            <li><b>Form tutors:</b> contact via Parent Portal</li>
-            <li><b>Safeguarding:</b> safeguarding@school.tld</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Admin</h3>
-          <ul class="list">
-            <li><b>Exams office:</b> exams@school.tld</li>
-            <li><b>Absence:</b> attendance@school.tld</li>
-          </ul>
-        </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer" role="contentinfo">
+  <footer class="footer">
     <div class="footer-inner">
       <div>
-        <b>School Name — KS4 Hub</b>
-        <div class="muted">© <span id="year"></span> All rights reserved.</div>
+        <b>School Name</b>
+        <div class="muted">© <span id="year"></span></div>
       </div>
       <div class="muted">Privacy • Terms • Accessibility</div>
     </div>
   </footer>
 
   <script>
-    // Tiny enhancement: current year
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+
   <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -319,5 +268,6 @@ s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
 <!--End of Tawk.to Script-->
+
 </body>
 </html>
