@@ -1,41 +1,460 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <title>Totally Normal File</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
-    video {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus // AI Chat</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f6ff',
+                            100: '#e0edff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        darkbg: '#090d16',
+                        darkcard: '#111827',
+                        darkborder: '#1f293d'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Fira Code', 'JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Highlight.js for Code Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+    <style>
+        /* Custom sleek scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.2);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.4);
+        }
+        
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        .prose pre {
+            background-color: #0d1117 !important;
+            border: 1px solid #21262d;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            overflow-x: auto;
+        }
+        .prose code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+        }
+        .prose p {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        .prose ol {
+            list-style-type: decimal;
+            padding-left: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+    </style>
 </head>
-<body>
-  <video id="rick" src="rick.mp4" autoplay muted playsinline></video>
+<body class="bg-gray-50 text-gray-800 dark:bg-darkbg dark:text-gray-100 h-screen flex flex-col font-sans transition-colors duration-200 overflow-hidden">
 
-  <script>
-    const vid = document.getElementById('rick');
+    <script>
+        /* ==================================================================================== */
+        /*                                                                                      */
+        /* 🔑 HARDCODE YOUR API KEY & SYSTEM PROMPT BELOW                                       */
+        /*                                                                                      */
+        /* ==================================================================================== */
 
-    // Try to unmute after autoplay starts (some browsers allow this)
-    vid.addEventListener('play', () => {
-      vid.muted = false;
-    });
+        const apiKey = "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"; // 👈 PASTE YOUR GEMINI API KEY HERE (e.g. "AIzaSy...")
 
-    // Try to go fullscreen (will only work if browser allows it)
-    vid.addEventListener('click', () => {
-      if (vid.requestFullscreen) vid.requestFullscreen();
-      else if (vid.webkitRequestFullscreen) vid.webkitRequestFullscreen();
-      else if (vid.msRequestFullscreen) vid.msRequestFullscreen();
-    });
-  </script>
+        const systemPrompt = "You are a helpful, precise, and concise AI assistant. Provide clear, well-structured answers using code snippets with markdown formatting when appropriate."; // 👈 YOUR SYSTEM PROMPT
+
+        /* ==================================================================================== */
+    </script>
+
+    <script>
+        const state = {
+            apiKey: apiKey,
+            systemPrompt: systemPrompt,
+            model: 'gemini-3-flash-preview',
+            messages: [],
+            attachedImage: null,
+            attachedImageMime: null,
+            isGenerating: false
+        };
+
+        // Display quick toast message
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'error' ? 'bg-red-600 text-white' :
+                            type === 'success' ? 'bg-emerald-600 text-white' :
+                            'bg-gray-800 dark:bg-gray-700 text-white';
+            
+            const iconClass = type === 'error' ? 'fa-circle-exclamation' :
+                             type === 'success' ? 'fa-circle-check' : 'fa-circle-info';
+
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border border-white/10 ${bgClass} transform transition-all duration-300 translate-y-2 opacity-0 text-xs font-medium`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        async function fetchWithBackoff(url, options, maxRetries = 3) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.status === 429 || response.status >= 500) {
+                        if (i === maxRetries - 1) return response;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        delay *= 2;
+                        continue;
+                    }
+                    return response;
+                } catch (err) {
+                    if (i === maxRetries - 1) throw err;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+        }
+    </script>
+
+    <script>
+        async function handleChatSubmit() {
+            if (!state.apiKey) {
+                showToast("API Key is missing! Please hardcode your apiKey variable in the script tag.", "error");
+                return;
+            }
+
+            const inputEl = document.getElementById('chatInput');
+            const userText = inputEl.value.trim();
+            if (!userText && !state.attachedImage) return;
+
+            // Store message
+            const userMsg = { 
+                role: 'user', 
+                text: userText, 
+                image: state.attachedImage, 
+                imageMime: state.attachedImageMime 
+            };
+            state.messages.push(userMsg);
+            
+            // Reset input UI
+            inputEl.value = '';
+            inputEl.style.height = 'auto';
+            clearAttachedImage();
+            renderChatHistory();
+
+            state.isGenerating = true;
+            updateGeneratingUI();
+
+            // Construct Gemini payload
+            const formattedContents = state.messages.map(m => {
+                const parts = [];
+                if (m.text) parts.push({ text: m.text });
+                if (m.image) {
+                    parts.push({
+                        inlineData: {
+                            mimeType: m.imageMime || 'image/png',
+                            data: m.image.split(',')[1]
+                        }
+                    });
+                }
+                return { role: m.role, parts };
+            });
+
+            const payload = {
+                contents: formattedContents,
+                generationConfig: {
+                    temperature: 0.7
+                }
+            };
+
+            if (state.systemPrompt) {
+                payload.systemInstruction = { parts: [{ text: state.systemPrompt }] };
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${state.model}:generateContent?key=${state.apiKey}`;
+
+            try {
+                const res = await fetchWithBackoff(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    const replyText = data.candidates[0].content.parts[0].text;
+                    state.messages.push({ role: 'model', text: replyText });
+                } else {
+                    const errMsg = data.error?.message || "Received empty or unexpected response from model.";
+                    showToast(errMsg, "error");
+                    state.messages.push({ role: 'model', text: `⚠️ **API Error:** ${errMsg}` });
+                }
+            } catch (err) {
+                showToast("Failed to connect to API.", "error");
+                state.messages.push({ role: 'model', text: `⚠️ **Network Error:** ${err.message}` });
+            } finally {
+                state.isGenerating = false;
+                updateGeneratingUI();
+                renderChatHistory();
+            }
+        }
+    </script>
+
+    <!-- Header -->
+    <header class="h-14 border-b border-gray-200 dark:border-darkborder bg-white/80 dark:bg-darkbg/80 glass-panel shrink-0">
+        <div class="max-w-4xl mx-auto px-4 h-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-bolt text-xs"></i>
+                </div>
+                <h1 class="font-bold tracking-tight text-sm sm:text-base flex items-center gap-2">
+                    NEXUS <span class="text-[10px] px-2 py-0.5 rounded-md bg-brand-500/10 text-brand-500 border border-brand-500/20 font-mono">CHAT</span>
+                </h1>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="clearChatHistory()" title="Clear Chat" class="px-3 py-1.5 rounded-xl text-xs font-medium text-gray-500 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-trash-can text-xs"></i> Clear
+                </button>
+                <button onclick="toggleDarkMode()" title="Toggle Theme" class="p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i id="themeIcon" class="fa-solid fa-moon text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-4xl w-full mx-auto flex flex-col min-h-0">
+        
+        <!-- Chat History View -->
+        <div id="chatContainer" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
+            <!-- Empty Chat Welcome State -->
+            <div id="emptyChatState" class="h-full flex flex-col items-center justify-center text-center p-8 text-gray-400">
+                <div class="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center text-brand-500 text-xl mb-3">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+                <h2 class="font-bold text-gray-700 dark:text-gray-200 text-base mb-1">Nexus AI Assistant</h2>
+                <p class="text-xs max-w-xs mb-4">How can I help you today?</p>
+                <div class="flex flex-wrap gap-2 justify-center">
+                    <button onclick="quickPrompt('Explain quantum computing simply')" class="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-800 text-xs hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Quantum Computing</button>
+                    <button onclick="quickPrompt('Write a JavaScript fetch function with retry')" class="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-800 text-xs hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Async Fetch Code</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attached Image Preview Bar -->
+        <div id="attachedImageBar" class="hidden px-4 py-2 border-t border-gray-200 dark:border-darkborder bg-gray-50 dark:bg-darkbg flex items-center gap-3">
+            <img id="attachedImagePreview" class="w-10 h-10 object-cover rounded-lg border border-gray-300 dark:border-gray-700">
+            <span class="text-xs text-gray-500 truncate flex-1">Image attached for vision analysis</span>
+            <button onclick="clearAttachedImage()" class="text-xs text-red-500 hover:text-red-700 p-1">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Input Box Area -->
+        <div class="p-4 border-t border-gray-200 dark:border-darkborder bg-white dark:bg-darkbg">
+            <div class="flex items-end gap-2 bg-gray-50 dark:bg-darkcard border border-gray-200 dark:border-gray-800 rounded-2xl p-2 shadow-xs focus-within:border-brand-500 transition-colors">
+                
+                <!-- Attach File Button -->
+                <label class="p-2 text-gray-400 hover:text-brand-500 cursor-pointer rounded-xl hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors shrink-0" title="Attach Image">
+                    <i class="fa-solid fa-paperclip text-sm"></i>
+                    <input type="file" id="imageFileInput" accept="image/*" class="hidden" onchange="handleImageAttachment(event)">
+                </label>
+
+                <!-- Text Area Input -->
+                <textarea id="chatInput" rows="1" placeholder="Type a message..."
+                    onkeydown="handleChatKeyDown(event)"
+                    oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'"
+                    class="flex-1 bg-transparent px-2 py-1 text-sm outline-none resize-none max-h-32 text-gray-900 dark:text-gray-100 placeholder-gray-400"></textarea>
+
+                <!-- Submit Button -->
+                <button id="btnSendChat" onclick="handleChatSubmit()" class="p-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-xs transition-colors shrink-0">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        window.onload = function() {
+            if (window.marked) {
+                marked.setOptions({
+                    highlight: function(code, lang) {
+                        if (lang && hljs.getLanguage(lang)) {
+                            return hljs.highlight(code, { language: lang }).value;
+                        }
+                        return hljs.highlightAuto(code).value;
+                    },
+                    breaks: true
+                });
+            }
+        };
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-sun text-xs';
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-moon text-xs';
+            }
+        }
+
+        function handleChatKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleChatSubmit();
+            }
+        }
+
+        function quickPrompt(text) {
+            document.getElementById('chatInput').value = text;
+            handleChatSubmit();
+        }
+
+        function handleImageAttachment(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                state.attachedImage = e.target.result;
+                state.attachedImageMime = file.type;
+                
+                document.getElementById('attachedImagePreview').src = e.target.result;
+                document.getElementById('attachedImageBar').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearAttachedImage() {
+            state.attachedImage = null;
+            state.attachedImageMime = null;
+            document.getElementById('attachedImageBar').classList.add('hidden');
+            document.getElementById('imageFileInput').value = '';
+        }
+
+        function clearChatHistory() {
+            state.messages = [];
+            renderChatHistory();
+            showToast("Chat history cleared.", "info");
+        }
+
+        function renderChatHistory() {
+            const container = document.getElementById('chatContainer');
+            if (state.messages.length === 0) {
+                container.innerHTML = `
+                    <div id="emptyChatState" class="h-full flex flex-col items-center justify-center text-center p-8 text-gray-400">
+                        <div class="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center text-brand-500 text-xl mb-3">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <h2 class="font-bold text-gray-700 dark:text-gray-200 text-base mb-1">Nexus AI Assistant</h2>
+                        <p class="text-xs max-w-xs mb-4">How can I help you today?</p>
+                        <div class="flex flex-wrap gap-2 justify-center">
+                            <button onclick="quickPrompt('Explain quantum computing simply')" class="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-800 text-xs hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Quantum Computing</button>
+                            <button onclick="quickPrompt('Write a JavaScript fetch function with retry')" class="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-800 text-xs hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Async Fetch Code</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = state.messages.map((m) => {
+                const isUser = m.role === 'user';
+                const avatar = isUser ? 
+                    `<div class="w-7 h-7 rounded-lg bg-gray-700 text-white flex items-center justify-center text-xs shrink-0 font-bold">U</div>` :
+                    `<div class="w-7 h-7 rounded-lg bg-brand-600 text-white flex items-center justify-center text-xs shrink-0 font-bold"><i class="fa-solid fa-robot text-xs"></i></div>`;
+
+                let parsedContent = m.text ? (window.marked ? marked.parse(m.text) : m.text) : '';
+                let imgHtml = m.image ? `<img src="${m.image}" class="w-32 h-32 object-cover rounded-xl mb-2 border border-gray-300 dark:border-gray-700">` : '';
+
+                return `
+                    <div class="flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}">
+                        ${!isUser ? avatar : ''}
+                        <div class="max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 text-xs leading-relaxed ${
+                            isUser ? 'bg-brand-600 text-white rounded-br-xs' : 'bg-gray-100 dark:bg-darkcard text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-800 rounded-bl-xs prose dark:prose-invert'
+                        }">
+                            ${imgHtml}
+                            ${parsedContent}
+                        </div>
+                        ${isUser ? avatar : ''}
+                    </div>
+                `;
+            }).join('');
+
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function updateGeneratingUI() {
+            const btn = document.getElementById('btnSendChat');
+            if (state.isGenerating) {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i>`;
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i>`;
+            }
+        }
+    </script>
 </body>
 </html>
